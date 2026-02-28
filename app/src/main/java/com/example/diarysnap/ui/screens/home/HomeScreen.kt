@@ -2,6 +2,8 @@ package com.example.diarysnap.ui.screens.home
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -10,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
@@ -18,8 +21,6 @@ import coil.compose.AsyncImage
 import com.example.diarysnap.AppServices
 import com.example.diarysnap.ui.components.AppTopBar
 import com.example.diarysnap.viewmodel.HomeViewModel
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 
 @Composable
 fun HomeScreen(
@@ -38,6 +39,7 @@ fun HomeScreen(
     val entries by vm.entries.collectAsState(initial = emptyList())
 
     Scaffold(
+        containerColor = Color(0xFFE3F2FD),
         topBar = {
             AppTopBar(
                 title = "DiarySnap",
@@ -64,21 +66,13 @@ fun HomeScreen(
             if (entries.isEmpty()) {
                 Card(
                     shape = RoundedCornerShape(18.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f)
-                    ),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(Modifier.padding(16.dp)) {
-                        Text(
-                            text = "Noch keine Einträge",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                        Text("Noch keine Einträge", style = MaterialTheme.typography.titleMedium)
                         Spacer(Modifier.height(6.dp))
                         Text(
-                            text = "Tippe auf + und erstelle deinen ersten Tagebucheintrag.",
-                            style = MaterialTheme.typography.bodyMedium,
+                            "Tippe auf + und erstelle deinen ersten Tagebucheintrag.",
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f)
                         )
                     }
@@ -89,77 +83,45 @@ fun HomeScreen(
                     contentPadding = PaddingValues(bottom = 88.dp)
                 ) {
                     items(entries) { e ->
-                        EntryCard(
-                            title = e.title,
-                            mood = e.mood,
-                            imageUrl = e.imageUrl,
-                            onClick = { onOpenDetail(e.id) }
-                        )
+                        Card(
+                            shape = RoundedCornerShape(18.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onOpenDetail(e.id) }
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(14.dp),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                if (!e.imageUrl.isNullOrBlank()) {
+                                    AsyncImage(
+                                        model = e.imageUrl,
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .size(64.dp)
+                                            .clip(RoundedCornerShape(14.dp))
+                                    )
+                                } else {
+                                    Surface(
+                                        modifier = Modifier.size(64.dp),
+                                        shape = RoundedCornerShape(14.dp),
+                                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
+                                    ) {}
+                                }
+
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(e.title, style = MaterialTheme.typography.titleMedium, maxLines = 1)
+                                    Spacer(Modifier.height(8.dp))
+                                    AssistChip(
+                                        onClick = {},
+                                        label = { Text(e.mood.ifBlank { "ohne Mood" }) }
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
-            }
-        }
-    }
-}
-
-@Composable
-private fun EntryCard(
-    title: String,
-    mood: String,
-    imageUrl: String?,
-    onClick: () -> Unit
-) {
-    Card(
-        shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-    ) {
-        Row(
-            modifier = Modifier.padding(14.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            if (!imageUrl.isNullOrBlank()) {
-                AsyncImage(
-                    model = imageUrl,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(64.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                )
-            } else {
-                Surface(
-                    modifier = Modifier.size(64.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.18f)
-                ) {}
-            }
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1
-                )
-
-                Spacer(Modifier.height(8.dp))
-
-                val moodText = mood.ifBlank { "ohne Mood" }
-
-                // ✅ Ohne border, damit kein Material3 Typ-Fehler mehr kommt
-                AssistChip(
-                    onClick = { /* no-op */ },
-                    label = { Text(moodText) },
-                    colors = AssistChipDefaults.assistChipColors(
-                        containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.18f),
-                        labelColor = MaterialTheme.colorScheme.onSurface
-                    )
-                )
             }
         }
     }

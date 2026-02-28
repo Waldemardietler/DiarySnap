@@ -1,7 +1,6 @@
 package com.example.diarysnap.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,10 +13,17 @@ import com.example.diarysnap.ui.screens.login.LoginScreen
 import com.example.diarysnap.ui.screens.profile.ProfileScreen
 
 @Composable
-fun AppNavGraph() {
+fun AppNavGraph(
+    darkMode: Boolean,
+    onDarkModeChange: (Boolean) -> Unit
+) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = Routes.LOGIN) {
+    NavHost(
+        navController = navController,
+        startDestination = Routes.LOGIN
+    ) {
+
         composable(Routes.LOGIN) {
             LoginScreen(
                 onLoggedIn = {
@@ -31,9 +37,7 @@ fun AppNavGraph() {
         composable(Routes.HOME) {
             HomeScreen(
                 onCreate = { navController.navigate(Routes.CREATE) },
-                onOpenDetail = { id ->
-                    navController.navigate("${Routes.DETAIL}/$id")
-                },
+                onOpenDetail = { id -> navController.navigate("${Routes.DETAIL}/$id") },
                 onOpenProfile = { navController.navigate(Routes.PROFILE) }
             )
         }
@@ -60,9 +64,10 @@ fun AppNavGraph() {
                     navController.navigate(Routes.LOGIN) {
                         popUpTo(Routes.HOME) { inclusive = true }
                     }
-                }
+                },
+                darkMode = darkMode,
+                onDarkModeChange = onDarkModeChange
             )
         }
     }
 }
-

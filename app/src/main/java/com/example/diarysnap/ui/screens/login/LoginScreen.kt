@@ -1,13 +1,20 @@
 package com.example.diarysnap.ui.screens.login
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.diarysnap.R
 import com.example.diarysnap.ui.components.PrimaryButton
 import com.example.diarysnap.viewmodel.AuthViewModel
 
@@ -22,42 +29,43 @@ fun LoginScreen(
 
     val error by vm.error.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        // Header
-        Text(
-            text = "DiarySnap",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
-        Spacer(Modifier.height(6.dp))
-        Text(
-            text = "Dein Tagebuch mit passenden Bildern von Unsplash.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f)
-        )
-
-        Spacer(Modifier.height(18.dp))
-
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(18.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    Scaffold(
+        containerColor = Color(0xFFE3F2FD)
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFE3F2FD))
+                .padding(padding)
         ) {
-            Column(Modifier.padding(16.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                    contentDescription = "App Logo",
+                    modifier = Modifier
+                        .size(120.dp)
+                        .padding(bottom = 16.dp)
+                )
+
+                Text(
+                    text = "DiarySnap",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color(0xFF1A237E)
+                )
+
+                Spacer(Modifier.height(24.dp))
 
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Email") },
-                    singleLine = true
+                    label = { Text("Email") }
                 )
 
                 Spacer(Modifier.height(12.dp))
@@ -66,27 +74,14 @@ fun LoginScreen(
                     value = password,
                     onValueChange = { password = it },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Passwort") },
-                    singleLine = true,
-                    visualTransformation = PasswordVisualTransformation()
+                    label = { Text("Passwort") }
                 )
 
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(16.dp))
 
                 if (error != null) {
-                    Card(
-                        shape = RoundedCornerShape(14.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.errorContainer
-                        )
-                    ) {
-                        Text(
-                            text = "❌ $error",
-                            modifier = Modifier.padding(12.dp),
-                            color = MaterialTheme.colorScheme.onErrorContainer
-                        )
-                    }
-                    Spacer(Modifier.height(12.dp))
+                    Text(text = "❌ $error", color = Color.Red)
+                    Spacer(Modifier.height(8.dp))
                 }
 
                 PrimaryButton(
@@ -99,14 +94,5 @@ fun LoginScreen(
                 )
             }
         }
-
-        Spacer(Modifier.height(12.dp))
-
-        Text(
-            text = "Tipp: Für das Abschlussprojekt reicht ein einfacher Login (Demo).",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.65f),
-            modifier = Modifier.padding(horizontal = 6.dp)
-        )
     }
 }
