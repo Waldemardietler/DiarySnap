@@ -10,6 +10,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -52,6 +53,33 @@ fun DiarySnapTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
+        typography = Typography,
+        content = content
+    )
+}
+
+
+private val LightColors = lightColorScheme(
+    primary = SunnyPrimary,
+    onPrimary = Color.White,
+
+    secondary = SunnySecondary,
+    onSecondary = Color.White,
+
+    tertiary = SunnyTertiary,
+    onTertiary = Color.Black,
+
+    background = SunnyBg,
+    onBackground = Color(0xFF1C1B1F),
+
+    surface = SunnySurface,
+    onSurface = Color(0xFF1C1B1F)
+)
+
+@Composable
+fun DiarySnapTheme(content: @Composable () -> Unit) {
+    MaterialTheme(
+        colorScheme = LightColors,
         typography = Typography,
         content = content
     )
