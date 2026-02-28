@@ -6,7 +6,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.diarysnap.ui.components.AppTopBar
@@ -23,50 +22,39 @@ fun ProfileScreen(
     val vm: ProfileViewModel = viewModel()
 
     Scaffold(
-        containerColor = Color(0xFFE3F2FD),
         topBar = {
             AppTopBar(
-                title = "Settings",
+                title = "Profil",
                 navIcon = Icons.Default.ArrowBack,
                 onNavClick = onBack
             )
         }
     ) { padding ->
-        Column(
-            Modifier
-                .padding(padding)
-                .padding(16.dp)
-                .fillMaxSize()
-        ) {
-            Text("Eingeloggt als:", style = MaterialTheme.typography.titleMedium)
+        Column(Modifier.padding(padding).padding(16.dp)) {
+
+            Text("Eingeloggt als:")
             Spacer(Modifier.height(6.dp))
-            Text(vm.email(), style = MaterialTheme.typography.bodyLarge)
+            Text(vm.email())
 
-            Spacer(Modifier.height(18.dp))
+            Spacer(Modifier.height(16.dp))
 
-            Card {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(14.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column {
-                        Text("Dark Mode", style = MaterialTheme.typography.titleMedium)
-                        Text(
-                            "Dunkles Design aktivieren",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.large
+            ) {
+                ListItem(
+                    headlineContent = { Text("Dark Mode") },
+                    supportingContent = { Text("Design umschalten") },
+                    trailingContent = {
+                        Switch(
+                            checked = darkMode,
+                            onCheckedChange = onDarkModeChange
                         )
                     }
-                    Switch(
-                        checked = darkMode,
-                        onCheckedChange = { onDarkModeChange(it) }
-                    )
-                }
+                )
             }
 
-            Spacer(Modifier.height(18.dp))
+            Spacer(Modifier.height(16.dp))
 
             PrimaryButton(
                 text = "Logout",
